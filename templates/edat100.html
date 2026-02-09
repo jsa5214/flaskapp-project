@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+<title>Quan faras 100 anys</title>
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='edat100.css')}}">
+</head>
+<body>
+  <h1>Hola {{ name }}, has consultat quan faras 100 anys:</h1>
+{% if any100 %}
+<h1>El {{any100}} faras 100 anys!!</h1>
+{% else %}
+  <h1>Ja tens o has superat el 100!!</h1>
+{% endif %}
+</body>
+</html>
