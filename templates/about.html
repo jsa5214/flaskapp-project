@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}About Me - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px; margin: 0 auto; margin-top: 30px; border-top: 4px solid #fff;">
+    <h2 class="text-center mb-2"
+        style="text-shadow: 0 0 15px rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 3px;">[ SYSTEM
+        ARCHITECT: PORTFOLIO ]</h2>
+
+    <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-top: 40px;">
+        <div style="flex: 1; min-width: 300px;">
+            <p style="font-size: 1.1rem; line-height: 1.8; color: #ddd;">
+                Welcome to my portfolio system. I'm a passionate engineer crafting <span
+                    style="color: var(--primary-color); font-weight: bold;">high-performance</span> interactive
+                environments and dynamic web architectures.
+            </p>
+
+            <h3 style="color: var(--primary-color); letter-spacing: 2px; margin-top: 30px;">> SKILL_TREE</h3>
+            <ul style="list-style: none; padding: 0; font-family: monospace;">
+                <li style="margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;">
+                    <span style="color: var(--secondary-color);">::</span> Python (Flask, Django) // BACKEND_CORE</li>
+                <li style="margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;">
+                    <span style="color: var(--secondary-color);">::</span> HTML, CSS, JavaScript // FRONTEND_VISUALS
+                </li>
+                <li style="margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;">
+                    <span style="color: var(--secondary-color);">::</span> SQL, MySQL, Database Design // DATA_LAKE</li>
+                <li style="margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;">
+                    <span style="color: var(--secondary-color);">::</span> Git, UI/UX Glassmorphism // VERSION_CONTROL &
+                    AESTHETICS</li>
+            </ul>
+        </div>
+
+        <div
+            style="flex: 1; min-width: 300px; background: rgba(0,0,0,0.5); padding: 25px; border-radius: var(--border-radius); border-left: 2px solid var(--secondary-color);">
+            <h3 style="color: var(--secondary-color); margin-top: 0; letter-spacing: 2px;">> ACADEMIC_PROJECTS</h3>
+            <ul style="list-style-type: none; padding: 0;">
+                <li style="margin-bottom: 25px;">
+                    <strong style="font-size: 1.1rem;"><a href="#" style="text-decoration: none; color: #fff;">1. Task
+                            Manager Pro</a></strong>
+                    <br><span style="font-size: 0.9em; color: var(--text-muted); font-family: monospace;">A complete
+                        multi-user task scheduler with deadlines and priority queuing.</span>
+                </li>
+                <li style="margin-bottom: 25px;">
+                    <strong style="font-size: 1.1rem;"><a href="#" style="text-decoration: none; color: #fff;">2.
+                            Weather Dashboard API</a></strong>
+                    <br><span style="font-size: 0.9em; color: var(--text-muted); font-family: monospace;">Real-time
+                        climate data visualization integrating a third-party REST API.</span>
+                </li>
+                <li
+                    style="margin-bottom: 25px; background: rgba(0,255,204,0.1); padding: 10px; border-radius: 4px; border-left: 3px solid var(--primary-color);">
+                    <strong style="font-size: 1.1rem;"><a href="#"
+                            style="text-decoration: none; color: var(--primary-color);">3. GameBacklog V2 (Current
+                            Hub)</a></strong>
+                    <br><span style="font-size: 0.9em; color: var(--text-muted); font-family: monospace;">Track gaming
+                        progress, compute custom analytics, and construct lists inside a high-tech UI.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

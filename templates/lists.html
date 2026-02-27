@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Les meves Llistes - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="flex justify-between align-center mb-2">
+    <h2 style="margin: 0; color: #fff; letter-spacing: 2px;">LES MEVES LLISTES</h2>
+</div>
+
+<div class="card mb-2"
+    style="background: linear-gradient(135deg, rgba(20,20,30,0.9) 0%, rgba(10,10,15,0.9) 100%); border-top: 3px solid var(--primary-color);">
+    <h3 style="color: var(--primary-color); margin-top: 0; font-size: 1.2rem;">>>> NOVA LLISTA</h3>
+    <form method="POST" action="{{ url_for('lists') }}" class="flex gap-2"
+        style="flex-wrap: wrap; align-items: flex-start;">
+        <div style="flex: 1; min-width: 200px;">
+            <input type="text" name="name" placeholder="Nom de la llista (ex: Top RPGs 2024)" required
+                style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.6);">
+        </div>
+        <div style="flex: 2; min-width: 300px;">
+            <input type="text" name="description" placeholder="Descripció..."
+                style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.6);">
+        </div>
+        <button type="submit" class="btn" style="padding: 12px 25px;">CREAR LLISTA</button>
+    </form>
+</div>
+
+<div class="card-grid">
+    {% for glist in lists %}
+    <div class="card flex" style="flex-direction: column; position: relative; overflow: hidden;">
+        <div style="position: absolute; left: 0; top: 0; height: 100%; width: 3px; background: var(--secondary-color);">
+        </div>
+        <div class="flex justify-between align-center mb-1">
+            <h3 style="margin: 0; font-size: 1.3rem;">
+                <a href="{{ url_for('list_detail', list_id=glist.id) }}"
+                    style="text-decoration: none; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.3);">
+                    {{ glist.name }}
+                </a>
+            </h3>
+            <span class="badge"
+                style="background: rgba(255, 0, 127, 0.15); color: var(--secondary-color); border: 1px solid var(--secondary-color);">{{
+                glist.items|length }} JOCS</span>
+        </div>
+        <p style="color: #bbb; flex-grow: 1; margin-top: 10px; font-style: italic;">
+            {{ glist.description or "Sense descripció." }}
+        </p>
+        <div
+            style="font-size: 0.75em; color: var(--text-muted); margin-top: 20px; font-family: monospace; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
+            CREADA: {{ glist.created_at.strftime('%d/%m/%Y %H:%M') }}
+        </div>
+    </div>
+    {% else %}
+    <div
+        style="grid-column: 1 / -1; padding: 60px; text-align: center; background: rgba(0,0,0,0.2); border: 1px dashed var(--border-color); border-radius: 8px;">
+        <h3 style="color: var(--text-muted); font-family: monospace;">SISTEMA: NO S'HAN TROBAT LLISTES</h3>
+        <p style="color: #666; font-family: monospace;">Crea una llista nova a la secció superior per començar.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

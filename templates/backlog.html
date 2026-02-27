@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}El meu Backlog - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card mb-2" style="border-top: 3px solid var(--secondary-color);">
+    <div class="flex justify-between align-center" style="flex-wrap: wrap; gap: 15px;">
+        <h2 style="margin: 0; color: var(--secondary-color); letter-spacing: 2px;">[ EL MEU BACKLOG ]</h2>
+
+        <form method="GET" action="{{ url_for('backlog') }}" class="flex gap-2">
+            <select name="status" onchange="this.form.submit()" style="background: rgba(0,0,0,0.5); font-weight: bold;">
+                <option value="">:: TOTS ELS ESTATS</option>
+                <option value="planned" {% if current_status=='planned' %}selected{% endif %}>:: PLANEJATS</option>
+                <option value="playing" {% if current_status=='playing' %}selected{% endif %}>:: JUGANT</option>
+                <option value="finished" {% if current_status=='finished' %}selected{% endif %}>:: ACABATS</option>
+                <option value="dropped" {% if current_status=='dropped' %}selected{% endif %}>:: ABANDONATS</option>
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    {% if not items %}
+    <div class="text-center"
+        style="padding: 60px; color: var(--text-muted); border: 1px dashed var(--secondary-color); margin: 20px;">
+        <p style="font-family: monospace; font-size: 1.1rem; margin-bottom: 20px;">BACKLOG BUIT. INICIEU PROCÉS
+            D'EXPLORACIÓ.</p>
+        <a href="{{ url_for('games') }}" class="btn">ACCEDIR AL CATÀLEG</a>
+    </div>
+    {% else %}
+    <div style="overflow-x: auto;">
+        <table style="margin-bottom: 0;">
+            <thead style="background: rgba(0, 0, 0, 0.4);">
+                <tr>
+                    <th style="color: var(--primary-color);">TÍTOL DEL JOC</th>
+                    <th>PLATAFORMA</th>
+                    <th>ESTAT</th>
+                    <th>HORES</th>
+                    <th>ÚLTIMA MODIFICACIÓ</th>
+                    <th style="text-align: right;">ACCIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td style="font-weight: 700; font-size: 1.1rem;">
+                        <a href="{{ url_for('game_detail', game_id=item.game.id) }}"
+                            style="text-decoration: none; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.2);">
+                            {{ item.game.title }}
+                        </a>
+                    </td>
+                    <td style="color: #bbb; font-family: monospace;">{{ item.game.platform }}</td>
+                    <td><span class="badge badge-{{ item.status }}">{{ item.status|upper }}</span></td>
+                    <td style="font-weight: bold; color: var(--primary-color);">{{ item.hours_played }}<span
+                            style="font-size: 0.8rem;">H</span></td>
+                    <td style="font-size: 0.85em; color: var(--text-muted); font-family: monospace;">{{
+                        item.updated_at.strftime('%Y-%m-%d') }}</td>
+                    <td style="text-align: right;">
+                        <a href="{{ url_for('backlog_add', game_id=item.game.id) }}" class="btn btn-sm btn-secondary"
+                            style="font-size: 0.7rem; padding: 4px 8px;">EDITAR</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

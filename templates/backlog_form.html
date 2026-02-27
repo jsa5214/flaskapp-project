@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Afegir/Editar al Backlog - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto; border-top: 3px solid var(--primary-color);">
+    <h2 style="color: var(--primary-color); text-transform: uppercase; letter-spacing: 2px;">
+        {% if item %}> ACTUALITZAR BACKLOG:{% else %}> AFEGIR JOC AL BACKLOG:{% endif %}
+        <br>
+        <span style="color: #fff; font-size: 1.5rem; text-shadow: 0 0 10px rgba(255,255,255,0.2);">{{ game.title
+            }}</span>
+    </h2>
+
+    <form method="POST" action="{{ url_for('backlog_add', game_id=game.id) }}">
+        <div class="form-group mt-2">
+            <label for="status">ESTAT ACTUAL:</label>
+            <select id="status" name="status" required>
+                <option value="planned" {% if item and item.status=='planned' %}selected{% endif %}>:: PLANEJAT (Vull
+                    jugar-hi)</option>
+                <option value="playing" {% if item and item.status=='playing' %}selected{% endif %}>:: JUGANT (Actiu)
+                </option>
+                <option value="finished" {% if item and item.status=='finished' %}selected{% endif %}>:: ACABAT
+                    (Completat)</option>
+                <option value="dropped" {% if item and item.status=='dropped' %}selected{% endif %}>:: ABANDONAT (No el
+                    seguiré jugant)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="hours_played">HORES JUGADES (OPCIONAL):</label>
+            <input type="number" id="hours_played" name="hours_played" step="0.1" min="0"
+                value="{{ item.hours_played if item else '0' }}">
+            <small
+                style="color: var(--secondary-color); display: block; margin-top: 5px; font-family: monospace;">Estimació
+                del sistema: {{ game.hours_estimated }}H</small>
+        </div>
+
+        <div class="form-group">
+            <label for="private_note">NOTES PRIVADES (Nomes ho veuràs tu):</label>
+            <textarea id="private_note" name="private_note" rows="5"
+                placeholder="Afegiu notes o dades xifrades aquí...">{{ item.private_note if item else '' }}</textarea>
+        </div>
+
+        <div class="flex gap-2" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <button type="submit" class="btn" style="flex: 2;">
+                {% if item %}DESAR CANVIS{% else %}AFEGIR JOC{% endif %}
+            </button>
+            <a href="{{ url_for('game_detail', game_id=game.id) }}" class="btn btn-secondary"
+                style="flex: 1; text-align: center;">CANCEL·LAR</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

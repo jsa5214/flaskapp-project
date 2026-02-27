@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ game.title }} - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card mb-2" style="position: relative; overflow: hidden; border-top: 4px solid var(--primary-color);">
+    <div
+        style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); border-radius: 50%;">
+    </div>
+
+    <div class="flex justify-between align-center" style="flex-wrap: wrap; position: relative; z-index: 1;">
+        <h2
+            style="margin: 0; font-size: 2.5rem; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.2);">
+            {{ game.title }}</h2>
+        <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-color);">
+            <span
+                style="font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-right: 10px;">VALORACIÓ</span>
+            <span class="badge badge-rating" style="font-size: 1.3rem; padding: 8px 15px;">★ {{
+                "%.1f"|format(avg_rating) if avg_rating else "N/A" }}</span>
+        </div>
+    </div>
+
+    <div
+        style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 4px; font-family: monospace; display: inline-block; color: var(--primary-color);">
+        <span style="color: #fff;">PLATAFORMA:</span> {{ game.platform }} &nbsp;|&nbsp;
+        <span style="color: #fff;">GÈNERE:</span> {{ game.genre }} &nbsp;|&nbsp;
+        <span style="color: #fff;">ANY DE SORTIDA:</span> {{ game.year }} &nbsp;|&nbsp;
+        <span style="color: #fff;">TEMPS EST.:</span> {{ game.hours_estimated }}H
+    </div>
+
+    <div style="margin-top: 25px; line-height: 1.8; font-size: 1.05rem; color: #dee2e6;">
+        <h3 style="color: var(--secondary-color); font-size: 1rem; letter-spacing: 2px;">DESCRIPCIÓ DEL JOC</h3>
+        {{ game.description }}
+    </div>
+
+    <div style="margin-top: 35px; border-top: 1px solid var(--border-color); padding-top: 20px;" class="flex gap-2">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('backlog_add', game_id=game.id) }}" class="btn" style="flex: 1; text-align: center;">
+            {% if backlog_item %}ACTUALITZAR BACKLOG{% else %}AFEGIR AL BACKLOG{% endif %}
+        </a>
+
+        <a href="{{ url_for('review_form', game_id=game.id) }}" class="btn btn-secondary"
+            style="flex: 1; text-align: center;">
+            {% if user_review %}EDITAR RESSENYA{% else %}ESCRIURE RESSENYA{% endif %}
+        </a>
+        {% else %}
+        <a href="{{ url_for('login', next=request.path) }}" class="btn" style="flex: 1; text-align: center;">INICIAR
+            SESSIÓ PER AFEGIR</a>
+        {% endif %}
+        <a href="{{ url_for('games') }}" class="btn btn-secondary" style="flex: 1; text-align: center;">TORNAR AL
+            CATÀLEG</a>
+    </div>
+</div>
+
+{% if current_user.is_authenticated and backlog_item %}
+<div class="card mb-2"
+    style="background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(20,20,30,0.8) 100%); border-left: 4px solid var(--secondary-color);">
+    <h3 style="color: var(--secondary-color); letter-spacing: 1px; margin-top: 0;">EL TEU BACKLOG</h3>
+    <div class="flex gap-2 align-center">
+        <strong style="color: var(--text-muted); font-family: monospace;">ESTAT:</strong>
+        <span class="badge badge-{{ backlog_item.status }}">{{ backlog_item.status|upper }}</span>
+
+        <strong style="margin-left: 30px; color: var(--text-muted); font-family: monospace;">HORES JUGADES:</strong>
+        <span style="color: #fff; font-weight: bold; font-size: 1.2rem;">{{ backlog_item.hours_played }}H</span>
+    </div>
+    {% if backlog_item.private_note %}
+    <div
+        style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-left: 2px solid var(--primary-color); font-style: italic; color: #bbb;">
+        "{{ backlog_item.private_note }}"
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="card">
+    <h3 style="color: var(--primary-color); letter-spacing: 2px;">RESSENYES DE LA COMUNITAT</h3>
+
+    {% if not reviews %}
+    <div
+        style="padding: 30px; text-align: center; border: 1px dashed var(--border-color); background: rgba(0,0,0,0.2);">
+        <p style="color: var(--text-muted); font-family: monospace;">[ ENCARA NO HI HA RESSENYES ]</p>
+    </div>
+    {% else %}
+    <ul style="list-style: none; padding: 0;">
+        {% for review in reviews %}
+        <li class="mb-2 pb-2"
+            style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+            <div class="flex justify-between align-center mb-1">
+                <strong style="color: #fff; font-size: 1.1rem; letter-spacing: 1px;">{{ review.author.username
+                    }}</strong>
+                <span class="badge badge-rating">★ {{ review.rating }}.0</span>
+            </div>
+            <div style="margin-top: 15px; margin-bottom: 15px; color: #ddd; line-height: 1.6; font-style: italic;">
+                {{ review.body }}
+            </div>
+            <div class="flex justify-between align-center"
+                style="font-size: 0.8em; color: var(--text-muted); font-family: monospace;">
+                <span>PUBLICAT: {{ review.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+
+                {% if current_user.is_authenticated and review.user_id == current_user.id %}
+                <form method="POST" action="{{ url_for('review_delete', review_id=review.id) }}" style="display:inline;"
+                    onsubmit="return confirm('N\'estàs segur d\'eliminar aquesta ressenya?');">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                        style="padding: 4px 10px; font-size: 0.7rem;">ELIMINAR</button>
+                </form>
+                {% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,16 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head><title>Login</title></head>
-<body>
-    <h1>Login</h1>
-    <form method="post">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br>
-      <!-- <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-      --> 
-        <input type="submit" value="Login">
+{% extends 'base.html' %}
+
+{% block title %}Iniciar sessió - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card"
+    style="max-width: 450px; margin: 0 auto; margin-top: 50px; border-top: 4px solid var(--primary-color);">
+    <h2 class="text-center mb-2" style="color: var(--primary-color); letter-spacing: 2px;">AUTHENTICATION REQ.</h2>
+    <div class="text-center mb-2" style="font-family: monospace; color: var(--text-muted);">Please provide system
+        credentials</div>
+
+    <form method="POST"
+        action="{{ url_for('login') }}{% if request.args.get('next') %}?next={{ request.args.get('next') }}{% endif %}">
+        <div class="form-group">
+            <label for="email">> SYS_EMAIL_IDENTIFIER</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+            <label for="password">> OVERRIDE_KEY (PASSWORD)</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; margin-top: 15px; letter-spacing: 2px;">AUTHORIZE AND
+            LAUNCH</button>
     </form>
-    <p>Don't have an account? <a href="/register">Register here</a></p>
-</body>
-</html>
+
+    <div class="text-center mt-2"
+        style="font-size: 0.9em; padding-top: 20px; border-top: 1px solid var(--border-color);">
+        <span style="color: var(--text-muted);">NO SYSTEM RECORD YET?</span> <br>
+        <a href="{{ url_for('register') }}"
+            style="color: var(--secondary-color); text-decoration: none; font-weight: bold; letter-spacing: 1px;">CREATE
+            NEW PROFILE INSTANCE</a>
+    </div>
+</div>
+{% endblock %}

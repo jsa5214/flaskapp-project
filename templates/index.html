@@ -1,14 +1,72 @@
-<!doctype html>
-<html>
-<head>
-<title>Hello from Flask</title>
-<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='styles.css')}}">
-</head>
-<body>
-{% if name %}
-  <h1>Hello {{ name }}!</h1>
-{% else %}
-  <h1>Hello, World!</h1>
-{% endif %}
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Inici - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="text-center mb-2" style="padding: 40px 0;">
+    <h1 style="font-size: 3rem; margin-bottom: 10px; text-shadow: 0 0 20px var(--primary-color); letter-spacing: 2px;">
+        GAMEBACKLOG</h1>
+    <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+        La teva plataforma per gestionar els videojocs que has jugat, els que estàs jugant i els que planejes jugar.
+    </p>
+</div>
+
+<div class="card mb-2" style="border-top: 4px solid var(--primary-color);">
+    <form action="{{ url_for('games') }}" method="GET" class="flex gap-2 align-center justify-between">
+        <input type="text" name="q" placeholder="Cercar un joc pel títol..."
+            style="flex: 1; font-size: 1.1rem; background: rgba(0,0,0,0.5);" required>
+        <button type="submit" class="btn" style="padding: 12px 30px; font-size: 1.1rem;">INICIAR CERCA</button>
+    </form>
+</div>
+
+<div class="card-grid mb-2">
+    <div class="card">
+        <h2 style="color: var(--primary-color);">HALL OF FAME (Top 5)</h2>
+        <ul style="list-style: none; padding: 0;">
+            {% for game, avg_rating in top_games %}
+            <li class="mb-1 pb-1" style="border-bottom: 1px solid var(--border-color); transition: padding-left 0.3s;"
+                onmouseover="this.style.paddingLeft='10px'" onmouseout="this.style.paddingLeft='0'">
+                <div class="flex justify-between align-center">
+                    <a href="{{ url_for('game_detail', game_id=game.id) }}"
+                        style="text-decoration: none; font-weight: 700; color: #fff; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.3);">
+                        {{ game.title }}
+                    </a>
+                    <span class="badge badge-rating">★ {{ "%.1f"|format(avg_rating) if avg_rating else "N/A" }}</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; text-transform: uppercase;">
+                    <span style="color: var(--primary-color);">{{ game.platform }}</span> &bull; {{ game.year }}
+                </div>
+            </li>
+            {% else %}
+            <li style="color: var(--text-muted); font-style: italic;">Encara no hi ha jocs valorats.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2 style="color: var(--secondary-color);">LATEST REVIEWS</h2>
+        <ul style="list-style: none; padding: 0;">
+            {% for review in latest_reviews %}
+            <li class="mb-1 pb-1" style="border-bottom: 1px solid var(--border-color); transition: padding-left 0.3s;"
+                onmouseover="this.style.paddingLeft='10px'" onmouseout="this.style.paddingLeft='0'">
+                <div class="flex justify-between">
+                    <strong><a href="{{ url_for('game_detail', game_id=review.game.id) }}"
+                            style="text-decoration: none; color: #fff;">{{ review.game.title }}</a></strong>
+                    <span class="badge badge-rating">★ {{ review.rating }}</span>
+                </div>
+                <div
+                    style="font-size: 0.9em; margin-top: 8px; color: #ccc; font-style: italic; border-left: 2px solid var(--secondary-color); padding-left: 10px;">
+                    "{{ review.body[:60] }}{{ '...' if review.body|length > 60 else '' }}"
+                </div>
+                <div style="font-size: 0.75em; color: var(--text-muted); margin-top: 8px; text-transform: uppercase;">
+                    Per <strong style="color: var(--secondary-color);">{{ review.author.username }}</strong> &bull; {{
+                    review.created_at.strftime('%d/%m/%Y') }}
+                </div>
+            </li>
+            {% else %}
+            <li style="color: var(--text-muted); font-style: italic;">Encara no hi ha ressenyes públiques.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

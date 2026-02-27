@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ glist.name }} - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="mb-2">
+    <a href="{{ url_for('lists') }}" class="btn btn-sm btn-secondary" style="font-family: monospace;">
+        < TORNAR A LLISTES</a>
+</div>
+
+<div class="card mb-2"
+    style="border-top: 4px solid var(--primary-color); background: linear-gradient(90deg, rgba(0,255,204,0.1), transparent);">
+    <h2 style="margin-top: 0; color: var(--primary-color); text-transform: uppercase;">
+        <span style="color: #fff;">//</span> {{ glist.name }}
+    </h2>
+    <p style="color: #ddd; font-style: italic;">{{ glist.description or "Sense descripció." }}</p>
+    <div style="font-size: 0.8em; color: var(--text-muted); font-family: monospace;">CREADA EL: {{
+        glist.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+</div>
+
+<div class="flex gap-2" style="flex-wrap: wrap;">
+    <div class="card" style="flex: 2; min-width: 300px;">
+        <h3 style="color: var(--primary-color);">> JOCS A LA LLISTA</h3>
+
+        {% if not glist.items %}
+        <div
+            style="padding: 40px; text-align: center; border: 1px dashed var(--border-color); background: rgba(0,0,0,0.2); font-family: monospace;">
+            <p style="color: var(--text-muted);">LA LLISTA ESTÀ BUIDA. AFEGEIX JOCS DES DEL PANELL LATERAL.</p>
+        </div>
+        {% else %}
+        <ul style="list-style: none; padding: 0;">
+            {% for item in glist.items %}
+            <li class="mb-1 pb-1 flex justify-between align-center"
+                style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 15px 10px; background: rgba(0,0,0,0.3); border-radius: 4px;">
+                <div>
+                    <strong><a href="{{ url_for('game_detail', game_id=item.game.id) }}"
+                            style="text-decoration: none; color: #fff; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.2);">{{
+                            item.game.title }}</a></strong>
+                    <div
+                        style="font-size: 0.8em; color: var(--primary-color); font-family: monospace; text-transform: uppercase;">
+                        PLATAFORMA: {{ item.game.platform }}</div>
+                </div>
+                <form method="POST" action="{{ url_for('list_detail', list_id=glist.id) }}">
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                        onclick="return confirm('Estàs segur d\'eliminar aquest joc de la llista?');">ELIMINAR</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="card"
+        style="flex: 1; min-width: 250px; background: rgba(10,10,15,0.9); border-top: 2px solid var(--secondary-color);">
+        <h3 style="color: var(--secondary-color);">> AFEGIR JOC</h3>
+
+        <form method="POST" action="{{ url_for('list_detail', list_id=glist.id) }}">
+            <input type="hidden" name="action" value="add">
+            <div class="form-group">
+                <select name="game_id" required style="width: 100%; font-family: monospace;" size="12">
+                    <option value="" disabled selected>-- SELECCIONA UN JOC --</option>
+                    {% for g in available_games %}
+                    <option value="{{ g.id }}" style="padding: 5px; border-bottom: 1px solid #333;">{{
+                        g.title|truncate(30) }} [{{ g.platform }}]</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn"
+                style="width: 100%; border-color: var(--secondary-color); color: var(--secondary-color);">AFEGIR</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

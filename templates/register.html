@@ -1,17 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head><title>Register</title></head>
-<body>
-    <h1>Register</h1>
-    <form method="post">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br>
-        <!--
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-        -->
-        <input type="submit" value="Register">
+{% extends 'base.html' %}
+
+{% block title %}Registre - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card"
+    style="max-width: 450px; margin: 0 auto; margin-top: 50px; border-top: 4px solid var(--secondary-color);">
+    <h2 class="text-center mb-2" style="color: var(--secondary-color); text-transform: uppercase; letter-spacing: 2px;">
+        CREATE NEW PROFILE INSTANCE</h2>
+
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="username">> SET_ALIAS (USERNAME)</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">> PROVIDE_SYSTEM_ADDRESS (EMAIL)</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">> GENERATE_KEY (MIN. 8 CHARS)</label>
+            <input type="password" id="password" name="password" minlength="8" required>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">> VERIFY_KEY</label>
+            <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
+        </div>
+
+        <button type="submit" class="btn"
+            style="width: 100%; border-color: var(--secondary-color); color: var(--secondary-color);">INITIALIZE
+            RECORD</button>
     </form>
-    <p>Already have an account? <a href="/login">Login here</a></p>
-</body>
-</html>
+
+    <div class="text-center mt-2"
+        style="font-size: 0.9em; padding-top: 20px; border-top: 1px dashed var(--border-color);">
+        <span style="color: var(--text-muted);">ALREADY IDENTIFIED?</span> <br>
+        <a href="{{ url_for('login') }}"
+            style="color: var(--primary-color); text-decoration: none; font-weight: bold; letter-spacing: 1px;">PROCEED
+            TO LOGIN HUB</a>
+    </div>
+</div>
+{% endblock %}

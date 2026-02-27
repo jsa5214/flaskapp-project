@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="mb-2"
+    style="background: linear-gradient(90deg, rgba(0, 255, 204, 0.1), transparent); padding: 20px; border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
+    <h2 style="margin: 0; text-shadow: 0 0 10px var(--primary-color);">JUGADOR: {{ current_user.username|upper }}</h2>
+    <p style="color: var(--text-muted); margin-bottom: 0;">Aquest és el teu centre d'operacions principal.</p>
+</div>
+
+<div class="card-grid mb-2">
+    <div class="card text-center"
+        style="border-top: 3px solid #6c757d; background: linear-gradient(180deg, rgba(108, 117, 125, 0.1) 0%, var(--surface-color) 100%);">
+        <h3 style="margin-top: 0; color: #adb5bd; font-size: 1rem; letter-spacing: 2px;">PLANEJATS</h3>
+        <div style="font-size: 3rem; font-weight: 800; text-shadow: 0 0 15px rgba(108, 117, 125, 0.5);">{{
+            counts.planned }}</div>
+    </div>
+
+    <div class="card text-center"
+        style="border-top: 3px solid var(--primary-color); background: linear-gradient(180deg, rgba(0, 255, 204, 0.1) 0%, var(--surface-color) 100%);">
+        <h3 style="margin-top: 0; color: var(--primary-color); font-size: 1rem; letter-spacing: 2px;">JUGANT</h3>
+        <div style="font-size: 3rem; font-weight: 800; text-shadow: 0 0 15px var(--primary-glow);">{{ counts.playing }}
+        </div>
+    </div>
+
+    <div class="card text-center"
+        style="border-top: 3px solid #28a745; background: linear-gradient(180deg, rgba(40, 167, 69, 0.1) 0%, var(--surface-color) 100%);">
+        <h3 style="margin-top: 0; color: #28a745; font-size: 1rem; letter-spacing: 2px;">ACABATS</h3>
+        <div style="font-size: 3rem; font-weight: 800; text-shadow: 0 0 15px rgba(40, 167, 69, 0.5);">{{ counts.finished
+            }}</div>
+    </div>
+
+    <div class="card text-center"
+        style="border-top: 3px solid var(--secondary-color); background: linear-gradient(180deg, rgba(255, 0, 127, 0.1) 0%, var(--surface-color) 100%);">
+        <h3 style="margin-top: 0; color: var(--secondary-color); font-size: 1rem; letter-spacing: 2px;">ABANDONATS</h3>
+        <div style="font-size: 3rem; font-weight: 800; text-shadow: 0 0 15px var(--secondary-glow);">{{ counts.dropped
+            }}</div>
+    </div>
+</div>
+
+<div class="flex gap-2" style="flex-wrap: wrap;">
+    <div class="card" style="flex: 2; min-width: 300px;">
+        <h2><span style="color: var(--primary-color);">></span> ÚLTIMA ACTIVITAT</h2>
+        {% if not latest_updates %}
+        <p style="color: var(--text-muted); font-style: italic;">Sense dades recents. <a href="{{ url_for('games') }}"
+                style="color: var(--primary-color);">Afegeix nous jocs</a> per
+            començar!</p>
+        {% else %}
+        <ul style="list-style: none; padding: 0;">
+            {% for item in latest_updates %}
+            <li class="mb-1 pb-1"
+                style="border-bottom: 1px dashed var(--border-color); padding: 15px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; transition: transform 0.2s;"
+                onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                <div class="flex justify-between align-center">
+                    <strong><a href="{{ url_for('game_detail', game_id=item.game.id) }}"
+                            style="text-decoration: none; color: #fff; font-size: 1.1rem;">{{ item.game.title
+                            }}</a></strong>
+                    <span class="badge badge-{{ item.status }}">{{ item.status|capitalize }}</span>
+                </div>
+                <div
+                    style="font-size: 0.8em; color: var(--text-muted); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px;">
+                    Actualitzat: {{ item.updated_at.strftime('%d/%m/%Y %H:%M') }}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="text-center mt-2">
+            <a href="{{ url_for('backlog') }}" class="btn btn-secondary">VEURE TOT EL BACKLOG</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card" style="flex: 1; min-width: 250px; border-top: 2px solid var(--secondary-color);">
+        <h3 style="color: var(--secondary-color);">ACCIONS RÀPIDES</h3>
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <li><a href="{{ url_for('games') }}" class="btn"
+                    style="width: 100%; box-sizing: border-box; text-align: left;"><span
+                        style="margin-right: 10px;">></span> EXPLORAR CATÀLEG</a></li>
+            <li><a href="{{ url_for('backlog') }}" class="btn btn-secondary"
+                    style="width: 100%; box-sizing: border-box; text-align: left;"><span
+                        style="color: var(--primary-color); margin-right: 10px;">></span> GESTIONAR EL MEU BACKLOG</a>
+            </li>
+            <li><a href="{{ url_for('lists') }}" class="btn btn-secondary"
+                    style="width: 100%; box-sizing: border-box; text-align: left;"><span
+                        style="color: var(--secondary-color); margin-right: 10px;">></span> GESTIONAR LES MEVES
+                    LLISTES</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

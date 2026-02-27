@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Pàgina no trobada - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card text-center" style="padding: 50px;">
+    <h1 style="font-size: 4rem; margin-bottom: 0px; color: var(--primary-color);">404</h1>
+    <h2>No hem pogut trobar el que busques.</h2>
+    <p style="color: #666;">La pàgina no existeix o ha estat moguda.</p>
+    <a href="{{ url_for('index') }}" class="btn mt-2">Tornar a l'inici</a>
+</div>
+{% endblock %}

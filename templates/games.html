@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Catàleg de Jocs - GameBacklog{% endblock %}
+
+{% block content %}
+<div class="card mb-2" style="border-left: 4px solid var(--primary-color);">
+    <h2 style="margin-bottom: 20px; color: var(--primary-color); text-transform: uppercase; letter-spacing: 2px;">Base
+        de Dades / Jocs</h2>
+    <form method="GET" action="{{ url_for('games') }}" class="flex gap-2 align-center" style="flex-wrap: wrap;">
+        <input type="text" name="q" placeholder="Cercar videojoc..." value="{{ current_q }}"
+            style="flex: 1; min-width: 200px; font-family: monospace; font-size: 1.1rem;">
+
+        <select name="platform" style="width: auto; font-weight: 600;">
+            <option value="">[Totes les plataformes]</option>
+            {% for p in platforms %}
+            <option value="{{ p }}" {% if current_p==p %}selected{% endif %}>:: {{ p }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="genre" style="width: auto; font-weight: 600;">
+            <option value="">[Tots els gèneres]</option>
+            {% for g in genres %}
+            <option value="{{ g }}" {% if current_g==g %}selected{% endif %}>:: {{ g }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn">CERCAR</button>
+        <a href="{{ url_for('games') }}" class="btn btn-secondary">NETEJAR</a>
+    </form>
+</div>
+
+<div class="card-grid">
+    {% for game in games %}
+    <div class="card" style="display: flex; flex-direction: column; overflow: hidden; position: relative;">
+        <div
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--primary-color), transparent);">
+        </div>
+        <h3 style="margin-top: 10px; margin-bottom: 5px; font-size: 1.25rem;">
+            <a href="{{ url_for('game_detail', game_id=game.id) }}"
+                style="text-decoration: none; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.2);">
+                {{ game.title }}
+            </a>
+        </h3>
+        <div
+            style="font-size: 0.8rem; color: var(--primary-color); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
+            {{ game.platform }} <span style="color: var(--text-muted);">//</span> {{ game.genre }} <span
+                style="color: var(--text-muted);">//</span> {{ game.year }}
+        </div>
+        <p style="font-size: 0.95em; flex-grow: 1; color: #ccc; line-height: 1.5;">
+            {{ game.description[:110] }}{{ '...' if game.description|length > 110 else '' }}
+        </p>
+        <div style="margin-top: 20px;">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('backlog_add', game_id=game.id) }}" class="btn btn-sm"
+                style="width: 100%; box-sizing: border-box; text-align: center; display: block;">AFEGIR AL BACKLOG</a>
+            {% else %}
+            <a href="{{ url_for('login', next=request.path) }}" class="btn btn-secondary btn-sm"
+                style="width: 100%; box-sizing: border-box; text-align: center; display: block;">INICIAR SESSIÓ</a>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="card"
+        style="grid-column: 1 / -1; text-align: center; padding: 60px; border: 1px dashed var(--secondary-color);">
+        <h3 style="color: var(--secondary-color); font-family: monospace;">SISTEMA: NO S'HAN TROBAT RESULTATS</h3>
+        <p style="color: var(--text-muted); font-family: monospace;">Ajusta els paràmetres de cerca.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
