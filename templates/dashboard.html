@@ -3,6 +3,7 @@
 {% block title %}Dashboard - GameBacklog{% endblock %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="mb-2"
     style="background: linear-gradient(90deg, rgba(0, 255, 204, 0.1), transparent); padding: 20px; border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
     <h2 style="margin: 0; text-shadow: 0 0 10px var(--primary-color);">JUGADOR: {{ current_user.username|upper }}</h2>
@@ -44,8 +45,7 @@
         <h2><span style="color: var(--primary-color);">></span> ÚLTIMA ACTIVITAT</h2>
         {% if not latest_updates %}
         <p style="color: var(--text-muted); font-style: italic;">Sense dades recents. <a href="{{ url_for('games') }}"
-                style="color: var(--primary-color);">Afegeix nous jocs</a> per
-            començar!</p>
+                style="color: var(--primary-color);">Afegeix nous jocs</a> per començar!</p>
         {% else %}
         <ul style="list-style: none; padding: 0;">
             {% for item in latest_updates %}
@@ -71,6 +71,16 @@
         {% endif %}
     </div>
 
+    <!-- NEW CHART WIDGET -->
+    <div class="card" style="flex: 1; min-width: 250px; border-top: 2px solid #00ffcc; text-align: center;">
+        <h3 style="color: #00ffcc;">> ANÀLISI DE DADES</h3>
+        <div style="position: relative; height: 250px; width: 100%; margin: 0 auto;">
+            <canvas id="backlogChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="flex gap-2" style="flex-wrap: wrap;">
     <div class="card" style="flex: 1; min-width: 250px; border-top: 2px solid var(--secondary-color);">
         <h3 style="color: var(--secondary-color);">ACCIONS RÀPIDES</h3>
         <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
@@ -88,4 +98,61 @@
         </ul>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartElement = document.getElementById('backlogChart');
+        if (!chartElement) return;
+        const ctx = chartElement.getContext('2d');
+
+        // Configuración global de Chart.js para que luzca "gaming" y se adapte al dark mode
+        Chart.defaults.color = '#a0a0b0';
+        Chart.defaults.font.family = "'Orbitron', sans-serif";
+
+        const data = {
+            labels: ['Planejats', 'Jugant', 'Acabats', 'Abandonats'],
+            datasets: [{
+                data: [
+                    {{ counts.planned |default(0) }},
+            {{ counts.playing |default(0) }},
+            {{ counts.finished|default (0)
+    }},
+        {{ counts.dropped |default(0) }}
+                ],
+        backgroundColor: [
+        'rgba(108, 117, 125, 0.6)',
+        'rgba(0, 255, 204, 0.6)',
+        'rgba(40, 167, 69, 0.6)',
+        'rgba(255, 0, 127, 0.6)'
+    ],
+        borderColor: [
+        '#6c757d',
+        '#00ffcc',
+        '#28a745',
+        '#ff007f'
+    ],
+        borderWidth: 2,
+        hoverOffset: 10
+            }]
+        };
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 20, color: '#e0e0e0' }
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+    });
+</script>
 {% endblock %}
