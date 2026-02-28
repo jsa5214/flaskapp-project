@@ -25,8 +25,15 @@ Aplicació web en Python (Flask) per gestionar un "backlog" de videojocs (catàl
    pip install -r requirements.txt
    ```
 
-3. **Inicialitzar la BD i carregar dades de prova (seed):**
-   Aquesta comanda crearà el fitxer `app.db` (en la carpeta `instance/` o directament al directori segons la versió de Flask-SQLAlchemy) i hi inserirà 15 jocs d'exemple.
+3. **Inicialitzar la BD (MySQL) i carregar dades de prova (seed):**
+   L'aplicació utilitza MySQL en lloc de SQLite. Abans de poblar la base de dades des de Flask, has de configurar el servidor MySQL i crear els usuaris necessaris utilitzant l'script automatitzat:
+   ```bash
+   chmod +x scripts/setup_db.sh
+   ./scripts/setup_db.sh
+   ```
+   *(Aquest script et demanarà permissos d'administrador per instal·lar i configurar MySQL al teu equip)*
+   
+   Un cop la base de dades estigui creada, pots inserir els 15 jocs d'exemple del catàleg mitjançant Flask:
    ```bash
    flask --app app seed
    ```
@@ -38,21 +45,3 @@ Aplicació web en Python (Flask) per gestionar un "backlog" de videojocs (catàl
 
 5. Obre el navegador a `http://127.0.0.1:5000/`.
 
----
-
-## 5 proves manuals (Checklist)
-
-- [ ] **1. Registre + login:**
-  Ves a "Registrar-se", crea un compte (per exemple: `usuari1`, `test@test.com`, `12345678`). Un cop registrat, la plataforma et redirigirà a Iniciar sessió. Entra amb el teu email i contrasenya.
-
-- [ ] **2. Buscar joc al catàleg:**
-  Ves a la pestanya "Catàleg" i fes servir el camp de text o els desplegables per filtrar per nom (ex: "Zelda"), plataforma ("PC") o gènere ("RPG").
-
-- [ ] **3. Afegir joc al backlog i canviar estat:**
-  Dins del catàleg o la fitxa del joc, clica a "+ Afegir al Backlog". Defineix el teu estat inicial (ex: "Planejat"), les hores jugades i desat. Després ves a "El meu Backlog" o al teu Dashboard i clica a "Editar" per canviar l'estat a "Jugant".
-
-- [ ] **4. Crear ressenya pública i veure-la a la fitxa:**
-  Entra a la fitxa d'un joc que hagis jugat, clica a "Escriure ressenya". Posa-li una nota (1-5), escriu un text i deixa marcat "Fer pública aquesta ressenya". Al tornar a la fitxa del joc, veuràs la ressenya a l'apartat "Ressenyes de la comunitat".
-
-- [ ] **5. Fer ressenya privada:**
-  Canvia la teva ressenya anterior o escriu-ne una de nova desmarcant la casella "Fer pública...". Accedeix al catàleg sense iniciar sessió (fent Logout) i comprova que la ressenya NO apareix a la fitxa del joc per als altres usuaris.
